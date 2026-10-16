@@ -1,6 +1,6 @@
 # 参考实现代码（可直接复制）
 
-本目录是 `agent-init` skill 的**可运行代码模板**，与 `E:/agent-skills/demo/` 保持同步。
+本目录是 `agent-init` skill 的**可运行代码模板**，从参考实现里抽出，可直接复制。
 复制到新项目后按注释里的占位改路径/密钥即可。
 
 ## 后端（Python）
@@ -33,4 +33,4 @@
 
 > 未放进模板的（按讲解自行实现即可）：`ChatInterface.tsx`、`ChatMessage.tsx`、`ToolCallBox.tsx`、
 > `TasksFilesPanel.tsx`、`ThinkingPanel.tsx`、`AppHeader.tsx`、`Settings.tsx`、`theme.css`
-> —— 这些的结构与要点见 `../frontend.md`，完整实现看 `E:/agent-skills/demo/frontend/src/`。
+> —— 这些的结构与要点见 `../frontend.md`；形态与效果见 `../init_demo/`。
