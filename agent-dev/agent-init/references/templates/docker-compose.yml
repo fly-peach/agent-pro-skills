@@ -1,0 +1,91 @@
+# ── Agent Console 全栈部署 ────────────────────────────────────────────────
+# 数据存储：PostgreSQL（官方推荐镜像 pgvector/pgvector:pg16）+ Redis（任务队列）
+# 后端：langgraph-api 服务（POSTGRES_URI / REDIS_URI 指向下面两个服务）
+# 前端：Vite 构建产物由 nginx 提供，浏览器通过 localhost:2024 访问后端
+#
+# Windows 用户在 WSL 里执行：  docker compose up -d --build
+# 密钥放在同目录 .env（已被 .gitignore 忽略）：DEEPSEEK_API_KEY=sk-...
+
+name: agent-console
+
+services:
+  postgres:
+    restart: unless-stopped
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    # 官方 compose 同款：加载 pgvector 扩展
+    command: ["postgres", "-c", "shared_preload_libraries=vector"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432" # 可选：从 Windows 用客户端直连检查数据
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 1s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    restart: unless-stopped
+    image: redis:6
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 1s
+      retries: 5
+
+  langgraph-api:
+    restart: unless-stopped
+    # 默认走 OSS 路线（开源服务端 + 自定义 Postgres checkpointer，无需 license）
+    # 若有 LANGSMITH_API_KEY / 商业 license，可改成 dockerfile: Dockerfile（官方 licensed 镜像）
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.oss
+    ports:
+      - "2024:8000" # 容器内服务监听 8000
+    environment:
+      POSTGRES_URI: postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+      REDIS_URI: redis://redis:6379
+      # 模型密钥由环境变量注入（容器内 model_config.json 为空，代码会回退读它）
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      # 配置目录指向挂载卷：模型配置 / Agent 配置（含 system prompt）容器重建后不丢
+      AGENT_CONSOLE_CONFIG_DIR: /app/config
+      # 运行期数据目录：技能库（skills/）与沙箱工作目录（sandbox/）都落卷，容器重建不丢
+      AGENT_CONSOLE_DATA_DIR: /app/data
+      PYTHONUTF8: "1"
+    volumes:
+      # inmem 版的线程/运行元数据落盘（容器重建也不丢）；会话内容在 postgres 卷
+      - appdata:/app/backend/.langgraph_api
+      - cfgdata:/app/config
+      - datadata:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    restart: unless-stopped
+    build:
+      context: ./frontend
+      args:
+        # 浏览器侧地址：容器名对浏览器不可见，必须用宿主机映射的端口
+        VITE_API_URL: http://localhost:2024
+    ports:
+      - "5173:80"
+    depends_on:
+      - langgraph-api
+
+volumes:
+  pgdata:
+    driver: local
+  appdata:
+    driver: local
+  cfgdata:
+    driver: local
+  datadata:
+    driver: local

@@ -1,0 +1,30 @@
+[project]
+name = "agent-console-backend"
+version = "0.1.0"
+description = "Agent Console backend (deepagents + langgraph)"
+requires-python = ">=3.12"
+# 注意：deepagents 的 Python 包与 npm 包版本号不同步（Python 侧当前是 0.7.x）
+dependencies = [
+    "deepagents>=0.7.25",
+    "langchain-openai>=1.0",
+    "langchain-deepseek>=1.1",
+    "fastapi>=0.115",
+    # 自定义 checkpointer 用（langgraph.json → checkpointer.backend=custom）
+    "langgraph-checkpoint-postgres>=3.2",
+    "psycopg[binary]>=3.2",   # slim 镜像里没有 libpq，binary 版自带
+    "python-multipart>=0.0.9",  # 技能 zip 上传（FastAPI UploadFile）
+    "langgraph-checkpoint-sqlite>=3.1",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# 平铺布局下有两个顶层模块，必须显式声明，否则 setuptools 拒绝构建
+# （本地 `langgraph dev` 直接读源码不会触发，Docker 里 `uv pip install -e .` 会）
+[tool.setuptools]
+py-modules = ["agent", "api"]
+
+# 本地开发用 venv 时不安装本项目自身（Docker 构建走上面的 setuptools 配置）
+[tool.uv]
+package = false

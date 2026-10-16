@@ -1,0 +1,18 @@
+{
+  "dependencies": [
+    "."
+  ],
+  "python_version": "3.12",
+  "graphs": {
+    "agent": "./agent.py:agent",
+    "agent-thinking": "./agent.py:agent_thinking"
+  },
+  "env": ".env",
+  "http": {
+    "app": "./api.py:app"
+  },
+  "checkpointer": {
+    "backend": "custom",
+    "path": "./checkpointer.py:make_checkpointer"
+  }
+}
