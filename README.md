@@ -10,7 +10,7 @@
 | [`agent-init`](agent-dev/agent-init/SKILL.md) | 初始化 **Agent Console** 完整形态：对话（思考开关 / 检查点时间旅行）、配置（Agent + 模型双 tab）、工具注册（工具 + 技能双 tab）、Docker 部署（Postgres 持久化） | 要起一个 agent 开发/调试控制台 |
 
 **可运行参考实现（demo）不随本仓库分发。** 想知道初始化出来长什么样：
-截图与交付说明见 [`agent-init/init_demo/`](agent-dev/agent-init/init_demo/README.md)（7 张运行截图），
+截图与交付说明见 [`init_demo/`](init_demo/README.md)（7 张运行截图），
 可直接复制的代码见 [`agent-init/references/templates/`](agent-dev/agent-init/references/templates/README.md)（14 个文件）。
 
 ## 快速开始
@@ -44,9 +44,9 @@ agent-dev/
 ├── env-preflight/          SKILL.md + scripts/（preflight / install-deps，各含 sh + ps1）
 └── agent-init/
     ├── SKILL.md            形态 + 决策 + 流程 + 索引
-    ├── references/         7 篇详解（backend-agent / backend-api / frontend / docker-deploy / langgraph-json / pitfalls / README）
-    │   └── templates/      14 个可复制文件（后端 7 + 部署 1 + 前端 5 + 说明）
-    └── init_demo/          交付记录：README + 7 张运行截图
+    └── references/         7 篇详解（backend-agent / backend-api / frontend / docker-deploy / langgraph-json / pitfalls / README）
+        └── templates/      14 个可复制文件（后端 7 + 部署 1 + 前端 5 + 说明）
+init_demo/                  交付记录：README + 7 张运行截图
 ```
 
 ## 说明

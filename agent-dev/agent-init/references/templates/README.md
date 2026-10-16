@@ -33,4 +33,4 @@
 
 > 未放进模板的（按讲解自行实现即可）：`ChatInterface.tsx`、`ChatMessage.tsx`、`ToolCallBox.tsx`、
 > `TasksFilesPanel.tsx`、`ThinkingPanel.tsx`、`AppHeader.tsx`、`Settings.tsx`、`theme.css`
-> —— 这些的结构与要点见 `../frontend.md`；形态与效果见 `../init_demo/`。
+> —— 这些的结构与要点见 `../frontend.md`；形态与效果见 `../../../init_demo/`。

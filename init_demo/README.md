@@ -1,6 +1,6 @@
 # init_demo —— 初始化交付形态
 
-这是 `agent-init` 初始化出来的项目长什么样：**截图 + 交付说明**。代码不随仓库分发（`demo/` 不入库），实现用 `../references/templates/` 的 14 个模板起项目。
+这是 `agent-init` 初始化出来的项目长什么样：**截图 + 交付说明**。代码不随仓库分发（`demo/` 不入库），实现用 `agent-dev/agent-init/references/templates/` 的 14 个模板起项目。
 
 ## 交付要点
 
@@ -24,5 +24,5 @@
 ## 复现路径
 
 1. `agent-dev/env-preflight`：install-deps（装依赖）+ preflight（体检）
-2. 复制 `references/templates/` 的代码起后端 → `langgraph dev --port 2024`
+2. 复制 `agent-dev/agent-init/references/templates/` 的代码起后端 → `langgraph dev --port 2024`
 3. 起前端（Vite + React + @langchain/react）→ Docker：`docker compose up -d --build`
