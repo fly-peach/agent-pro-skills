@@ -12,7 +12,7 @@
 | `langgraph.json` | 部署描述：双图 + `http.app` + `python_version` + 自定义 checkpointer |
 | `checkpointer.py` | 自定义 checkpointer（`POSTGRES_URI` → `AsyncPostgresSaver`，否则 SQLite） |
 | `pyproject.toml` | 依赖声明（含 `deepagents` / `langchain-deepseek` / checkpoint-postgres / `psycopg[binary]` / `python-multipart`） |
-| `langfuse.py` | Langfuse trace 接入（env 开关）：`langfuse_model_kwargs()` 挂到 ChatOpenAI，未配置零侵入 |
+| `langfuse.py` | Langfuse trace 接入（env 开关）：`langfuse_model_cls()` 包模型类，未配置零侵入 |
 | `Dockerfile.oss` | OSS 服务端镜像（`langgraph dev` + 自定义 PG checkpointer，无需 license） |
 | `model_config.example.json` | 模型配置示例（复制成 `model_config.json` 填 key） |
 

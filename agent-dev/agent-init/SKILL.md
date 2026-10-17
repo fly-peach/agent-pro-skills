@@ -57,7 +57,7 @@ description: 初始化一个 Agent Console 全栈项目的标准形态：DeepAge
 5. **前端照搬官方 deep-agents-ui 结构**（会话列表 / 聊天区 / 工具卡 / Tasks-Files 面板），Next.js+shadcn 换成 Vite+原生 CSS，配色取官方 `globals.css` 两套 token。
 6. **破坏性操作一律先确认**（`ConfirmDialog`），批量操作"预检 → 确认 → 执行"。
 7. **未开发的功能先占位**：`NotDeveloped` 组件只写「未开发」，导航项直接叫「未开发界面」；不要写长规划清单。
-8. **监控走 Langfuse（可选，env 开关零侵入）**：模型级 callbacks → 每次模型调用一条 trace（输入/输出/token/耗时），UI 在 `:3000/traces`；不配 key 时代码路径完全不变。平台形态下 trace 粒度 = 模型调用（整图含工具节点需自建服务）。→ `references/langfuse.md`
+8. **监控走 Langfuse（可选，env 开关零侵入）**：`langfuse_model_cls()` 包模型类（重写 bind_tools，在绑定产物上 `with_config` 注入 callbacks）→ 每次模型调用一条 trace（输入/输出/token/latency/session）。不配 key 时代码路径完全不变。langchain 1.4.5 只有 invoke config 接受 callbacks —— 实测矩阵与坑见 `references/langfuse.md`
 
 ## 三、后端要点（细节见 references/backend-agent.md、backend-api.md）
 
@@ -92,7 +92,7 @@ agent_thinking = ...  # 同结构，model_key="thinking_model"
 管理接口（`api.py`）：`/demo/model-config`、`/demo/agent-config`（含 `system_prompt` + `builtin_system_prompt`）、
 `/demo/tools`（全部可见工具 + 分组/来源/可用性）、`/demo/skills`（列表 / zip 上传 / 文本创建 / 删除）。
 
-可选监控：`templates/langfuse.py`（env 开关）→ 模型级 callbacks → Langfuse trace（`:3000/traces`）；粒度与坑见 `references/langfuse.md`。
+可选监控：`templates/langfuse.py`（env 开关）→ `langfuse_model_cls()` 包模型类 → Langfuse trace（`/project/<id>/traces`）；粒度与坑见 `references/langfuse.md`。
 
 ## 四、前端要点（细节见 references/frontend.md）
 
