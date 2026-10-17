@@ -1,6 +1,6 @@
 # init_demo —— 初始化交付形态
 
-这是 `agent-init` 初始化出来的项目长什么样：**截图 + 交付说明**。代码不随仓库分发（`demo/` 不入库），实现用 `agent-dev/agent-init/references/templates/` 的 14 个模板起项目。
+这是 `agent-init` 初始化出来的项目长什么样：**截图 + 交付说明**。代码不随仓库分发（`demo/` 不入库），实现用 `agent-dev/agent-init/references/templates/` 的 15 个模板起项目。
 
 ## 交付要点
 

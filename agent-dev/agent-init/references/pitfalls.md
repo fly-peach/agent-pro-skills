@@ -63,7 +63,7 @@
 | 切配置维度后页面不刷新 | `useEffect` 依赖要包含那个维度，切换时先清空再加载 |
 | 删除点了就直接删了 | 破坏性操作必须过 `ConfirmDialog`；批量先"预检 → 确认 → 执行" |
 
-## F. 技能库 / 平台 API
+## F. 技能库 / 平台 API / 监控
 
 | 症状 | 原因 / 处理 |
 |---|---|
@@ -71,7 +71,11 @@
 | 技能里的脚本跑不起来 | 脚本用绝对路径；`/skills/` 是真实目录，而 `execute` 的工作目录在 default 后端（沙箱目录），不是同一个根 |
 | 想加"图拓扑/会话历史/复制会话"接口 | **先用平台 API**；自建过的 `GET /demo/agent-graph` 已被平台端点取代 |
 | `client.assistants.search` 类型报错 | SDK 两个重载：`includePagination: true` → `{assistants,next}`，否则 `Assistant[]`；别用 `as any` 强转 |
-| 列表里点进去是空的"空壳会话" | dev 模式 checkpoint 在内存 → 用 `threads.getState` 筛出无消息的再 `threads.prune` |
+| 列表里点进去是空的“空壳会话” | dev 模式 checkpoint 在内存 → 用 `threads.getState` 筛出无消息的再 `threads.prune` |
+| Langfuse 容器里连不上 `localhost:3000` | 容器里的 localhost 是自己 → `LANGFUSE_HOST=http://host.docker.internal:3000` + compose 加 `extra_hosts: ["host.docker.internal:host-gateway"]` |
+| langfuse SDK v5 设置不了 session | v5 无 `session_id` 构造参数 → 走 config `metadata` 魔法键：`langfuse_session_id` / `langfuse_user_id` / `langfuse_tags` |
+| langfuse 装不进 demo venv | uv 管理无 pip → `uv pip install --python .venv/Scripts/python.exe "langfuse>=5"` 或改 pyproject 后 `uv sync` |
+| 配了 key 但 UI 没 trace | 先看服务是否 6 容器全 Healthy；再查 `LANGFUSE_ENABLED` 是否被置 0、langgraph dev 是否读到了 `.env` |
 
 ## G. 工程习惯（踩坑换来的）
 

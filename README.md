@@ -7,11 +7,11 @@
 | Skill | 作用 | 什么时候用 |
 |---|---|---|
 | [`env-preflight`](agent-dev/env-preflight/SKILL.md) | 环境准备 + 体检：装 docker / python+uv / node / bun / git，再逐项检查可用性。Windows+WSL 与原生 Linux 双形态 | 新机器开工、环境报错排查 |
-| [`agent-init`](agent-dev/agent-init/SKILL.md) | 初始化 **Agent Console** 完整形态：对话（思考开关 / 检查点时间旅行）、配置（Agent + 模型双 tab）、工具注册（工具 + 技能双 tab）、Docker 部署（Postgres 持久化） | 要起一个 agent 开发/调试控制台 |
+| [`agent-init`](agent-dev/agent-init/SKILL.md) | 初始化 **Agent Console** 完整形态：对话（思考开关 / 检查点时间旅行）、配置（Agent + 模型双 tab）、工具注册（工具 + 技能双 tab）、Docker 部署（Postgres 持久化）、Langfuse trace 监控（可选） | 要起一个 agent 开发/调试控制台 |
 
 **可运行参考实现（demo）不随本仓库分发。** 想知道初始化出来长什么样：
 截图与交付说明见 [`init_demo/`](init_demo/README.md)（7 张运行截图），
-可直接复制的代码见 [`agent-init/references/templates/`](agent-dev/agent-init/references/templates/README.md)（14 个文件）。
+可直接复制的代码见 [`agent-init/references/templates/`](agent-dev/agent-init/references/templates/README.md)（15 个文件）。
 
 ## 快速开始
 
@@ -23,6 +23,9 @@ bash agent-dev/env-preflight/scripts/preflight.sh            # 环境体检
 # 2) 初始化项目
 #    把 agent-dev/agent-init/ 交给你的 agent，或照 references/ 与 templates/ 手动搭
 #    产出：后端（LangGraph + deepagents）+ 前端（React）+ Docker Compose
+#
+# 3) 可选：接 Langfuse trace 监控（本地自托管 E:/langfuse）
+#    见 agent-dev/agent-init/references/langfuse.md
 ```
 
 ## 形态速览
@@ -44,8 +47,8 @@ agent-dev/
 ├── env-preflight/          SKILL.md + scripts/（preflight / install-deps，各含 sh + ps1）
 └── agent-init/
     ├── SKILL.md            形态 + 决策 + 流程 + 索引
-    └── references/         7 篇详解（backend-agent / backend-api / frontend / docker-deploy / langgraph-json / pitfalls / README）
-        └── templates/      14 个可复制文件（后端 7 + 部署 1 + 前端 5 + 说明）
+    └── references/         8 篇详解（backend-agent / backend-api / frontend / docker-deploy / langgraph-json / langfuse / pitfalls / README）
+        └── templates/      15 个可复制文件（后端 8 + 部署 1 + 前端 5 + 说明）
 init_demo/                  交付记录：README + 7 张运行截图
 ```
 

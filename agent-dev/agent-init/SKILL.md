@@ -8,7 +8,7 @@ description: 初始化一个 Agent Console 全栈项目的标准形态：DeepAge
 > **开工前先跑 `agent-dev/env-preflight`**（装 docker/python/uv/bun + 环境体检 + 版本一致性）。
 >
 > 详细资料在 `references/`：**可复制代码** `references/templates/`，逐块讲解
-> `references/backend-agent.md` / `backend-api.md` / `langgraph-json.md` / `docker-deploy.md` / `frontend.md`，
+> `references/backend-agent.md` / `backend-api.md` / `langgraph-json.md` / `docker-deploy.md` / `frontend.md` / `langfuse.md`，
 > 全部坑 `references/pitfalls.md`。本文件只讲**形态、决策、流程**。
 
 ## 一、完整形态（这就是"初始化一个 agent"的全貌）
@@ -48,7 +48,7 @@ description: 初始化一个 Agent Console 全栈项目的标准形态：DeepAge
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-## 二、七条关键决策（踩过坑后固化）
+## 二、八条关键决策（踩过坑后固化）
 
 1. **运行时配置中间件**：`RuntimeConfigMiddleware` 每次模型调用前读配置（模型 / 工具启停 / system prompt 追加），改配置=写文件、下次运行生效。**不要**靠热重载、也不要重建图（Windows 上 `langgraph dev` 热重载不可靠）。→ `references/backend-agent.md`
 2. **思考模式 = 多图注册 + 前端切 assistantId**：`agent`（标准模型）与 `agent-thinking`（deepseek-reasoner）各一图，前端"思考"开关切 `assistantId` 并用 `key` remount。**线程状态跨图共享**，所以会话列表**不要按图过滤**，切换时把当前 threadId 继续作为 seed。
@@ -57,6 +57,7 @@ description: 初始化一个 Agent Console 全栈项目的标准形态：DeepAge
 5. **前端照搬官方 deep-agents-ui 结构**（会话列表 / 聊天区 / 工具卡 / Tasks-Files 面板），Next.js+shadcn 换成 Vite+原生 CSS，配色取官方 `globals.css` 两套 token。
 6. **破坏性操作一律先确认**（`ConfirmDialog`），批量操作"预检 → 确认 → 执行"。
 7. **未开发的功能先占位**：`NotDeveloped` 组件只写「未开发」，导航项直接叫「未开发界面」；不要写长规划清单。
+8. **监控走 Langfuse（可选，env 开关零侵入）**：模型级 callbacks → 每次模型调用一条 trace（输入/输出/token/耗时），UI 在 `:3000/traces`；不配 key 时代码路径完全不变。平台形态下 trace 粒度 = 模型调用（整图含工具节点需自建服务）。→ `references/langfuse.md`
 
 ## 三、后端要点（细节见 references/backend-agent.md、backend-api.md）
 
@@ -91,6 +92,8 @@ agent_thinking = ...  # 同结构，model_key="thinking_model"
 管理接口（`api.py`）：`/demo/model-config`、`/demo/agent-config`（含 `system_prompt` + `builtin_system_prompt`）、
 `/demo/tools`（全部可见工具 + 分组/来源/可用性）、`/demo/skills`（列表 / zip 上传 / 文本创建 / 删除）。
 
+可选监控：`templates/langfuse.py`（env 开关）→ 模型级 callbacks → Langfuse trace（`:3000/traces`）；粒度与坑见 `references/langfuse.md`。
+
 ## 四、前端要点（细节见 references/frontend.md）
 
 - `useStream({ apiUrl, assistantId, threadId, onThreadId })`；乐观更新内置，加载态 `isLoading`，历史 hydrate 看 `isThreadLoading`
@@ -117,7 +120,8 @@ agent_thinking = ...  # 同结构，model_key="thinking_model"
 2) 起后端：langgraph dev --port 2024；curl /ok、/demo/tools 验证
 3) 前端：vite + @langchain/react + react-router；lib/chat.tsx → lib/api.ts → theme → 组件 → 页面
 4) 联调：发一条消息（工具调用 + 回复）；切思考模式验证 reasoning 流
-5) Docker：docker-compose.yml + Dockerfile.oss + checkpointer.py + 启停脚本 → 验证"重建容器后会话/配置/技能都在"
+4.5) 可选：接 Langfuse trace —— 复制 `templates/langfuse.py` + `.env` 配 key（本地自托管见 `references/langfuse.md`）→ 跑一轮看 `:3000/traces`
+5) Docker：docker-compose.yml + Dockerfile.oss + checkpointer.py + 启停脚本 → 验证“重建容器后会话/配置/技能都在”
 6) 文档：把本项目的形态与新增坑回写到本 skill 的 references/
 ```
 
