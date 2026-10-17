@@ -120,7 +120,7 @@ agent_thinking = ...  # 同结构，model_key="thinking_model"
 2) 起后端：langgraph dev --port 2024；curl /ok、/demo/tools 验证
 3) 前端：vite + @langchain/react + react-router；lib/chat.tsx → lib/api.ts → theme → 组件 → 页面
 4) 联调：发一条消息（工具调用 + 回复）；切思考模式验证 reasoning 流
-4.5) 可选：接 Langfuse trace —— 复制 `templates/langfuse.py` + `.env` 配 key（本地自托管见 `references/langfuse.md`）→ 跑一轮看 `:3000/traces`
+4.5) 可选：接 Langfuse trace —— **clone 官方仓**（`git clone https://github.com/langfuse/langfuse.git`）→ compose 起 6 容器 → 复制 `templates/langfuse.py` + 配 key（全流程与坑见 `references/langfuse.md`）→ 跑一轮看 trace
 5) Docker：docker-compose.yml + Dockerfile.oss + checkpointer.py + 启停脚本 → 验证“重建容器后会话/配置/技能都在”
 6) 文档：把本项目的形态与新增坑回写到本 skill 的 references/
 ```

@@ -24,7 +24,7 @@ bash agent-dev/env-preflight/scripts/preflight.sh            # 环境体检
 #    把 agent-dev/agent-init/ 交给你的 agent，或照 references/ 与 templates/ 手动搭
 #    产出：后端（LangGraph + deepagents）+ 前端（React）+ Docker Compose
 #
-# 3) 可选：接 Langfuse trace 监控（本地自托管 E:/langfuse）
+# 3) 可选：接 Langfuse trace 监控（git clone github.com/langfuse/langfuse 自托管）
 #    见 agent-dev/agent-init/references/langfuse.md
 ```
 

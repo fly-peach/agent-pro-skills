@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir uv
 
 WORKDIR /app/backend
 COPY pyproject.toml ./
-COPY agent.py api.py checkpointer.py langgraph.json ./
+COPY agent.py api.py checkpointer.py langgraph.json langfuse_setup.py ./
 
 # 开源服务端（inmem edition）+ 项目依赖（含 langgraph-checkpoint-postgres）
 RUN uv pip install --system --no-cache-dir "langgraph-cli[inmem]" -e .

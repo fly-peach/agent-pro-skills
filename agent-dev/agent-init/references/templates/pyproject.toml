@@ -8,6 +8,7 @@ dependencies = [
     "deepagents>=0.7.25",
     "langchain-openai>=1.0",
     "langchain-deepseek>=1.1",
+    "langfuse>=5",  # Langfuse trace（可选；env 未配置时零侵入）
     "fastapi>=0.115",
     # 自定义 checkpointer 用（langgraph.json → checkpointer.backend=custom）
     "langgraph-checkpoint-postgres>=3.2",

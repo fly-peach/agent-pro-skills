@@ -57,6 +57,12 @@ services:
       # 运行期数据目录：技能库（skills/）与沙箱工作目录（sandbox/）都落卷，容器重建不丢
       AGENT_CONSOLE_DATA_DIR: /app/data
       PYTHONUTF8: "1"
+      # Langfuse trace（可选）：宿主机自托管 :3000；三个变量全留空 = 关闭，零侵入
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+      LANGFUSE_HOST: http://host.docker.internal:3000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       # inmem 版的线程/运行元数据落盘（容器重建也不丢）；会话内容在 postgres 卷
       - appdata:/app/backend/.langgraph_api

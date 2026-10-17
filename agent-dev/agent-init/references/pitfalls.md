@@ -76,6 +76,7 @@
 | `async_client.with_raw_response.create` AttributeError | langfuse.openai 包装与 openai>=3 不兼容 → 别用客户端包装，用 model_cls |
 | Langfuse API 查 traces 报 events_only | v4 移除了老端点 → 用 UI / v4 Query API |
 | Langfuse 容器里连不上 `localhost:3000` | 容器里的 localhost 是自己 → `LANGFUSE_HOST=http://host.docker.internal:3000` + compose 加 `extra_hosts: ["host.docker.internal:host-gateway"]` |
+| 重建镜像后 api 反复重启（`ModuleNotFoundError: langfuse_setup`） | **`Dockerfile.oss` 的 COPY 是显式文件列表**，新增后端模块（如 `langfuse_setup.py`）要手动加进 COPY 行 |
 | langfuse SDK v5 设置不了 session | v5 无 `session_id` 构造参数 → 走 config `metadata` 魔法键：`langfuse_session_id` / `langfuse_user_id` / `langfuse_tags`（实测有效） |
 | langfuse 装不进 demo venv | uv 管理无 pip → `uv pip install --python .venv/Scripts/python.exe "langfuse>=5"` 或改 pyproject 后 `uv sync` |
 | 配了 key 但 UI 没 trace | 6 容器是否全 Healthy；`LANGFUSE_ENABLED` 是否被置 0；langgraph dev 是否读到了 `.env`；裸脚本是否忘了 `get_client().flush()` |

@@ -3,14 +3,20 @@
 给 Agent Console 加 LLM 可观测：每次模型调用的 **输入 / 输出 / token / 耗时 / 工具集** 都落在本地 Langfuse UI（`/project/<id>/traces`）。
 设计原则：**env 开关，未配置 = 零侵入**（不装 SDK、不配 key 时代码路径完全不变）。
 
-本地已有自托管 Langfuse（v4.63.0，源码仓 + compose，位于 `E:/langfuse`）。
-**已实测打通**：UI 能看到 trace（含 session / user / tags / tokens / latency）。
+本地 Langfuse = **自托管**（GitHub 克隆官方仓，web 镜像 4.63.0；本机在 `E:/langfuse`）。
+**已实测打通**：UI 能看到 trace（含 session / user / tags / tokens / latency / 工具参数与结果），且 **Docker 容器里的后端也能上报**（经 host.docker.internal）。
 
 ## 一、部署本地 Langfuse（6 个容器）
 
+**从 GitHub 克隆官方仓库**（自托管编排随仓库走，不要自己从零写 compose）：
+
 ```bash
-cd /e/langfuse
-# .env（compose 插值用；不要复制 .env.prod.example，那个 DATABASE_URL 指向不存在的 db:）
+git clone https://github.com/langfuse/langfuse.git
+cd langfuse
+git checkout v4.63.0   # 可选：固定版本；不 checkout 则跟最新
+```
+
+然后在仓库根建 `.env`（compose 插值用；不要复制 `.env.prod.example`，那个 DATABASE_URL 指向不存在的 `db:`）：
 NEXTAUTH_SECRET=<hex>            # openssl rand -hex 32
 SALT=<hex>
 ENCRYPTION_KEY=<64 位 hex>
@@ -93,6 +99,7 @@ UI 详情页头部会出现 `session ↗ · user: dev ↗ · tag`（Sessions / U
 | session 关联 | 靠调用方在 config.metadata 里带 `langfuse_session_id`；不传则每条 trace 独立 |
 | 要全图 trace | 需自建 agent 服务（FastAPI 里 `graph.astream(input, config={"callbacks": ...})`），平台 API 形态注入不了 |
 | 容器内 HOST | api 容器访问宿主机 Langfuse：`LANGFUSE_HOST=http://host.docker.internal:3000`，compose 加 `extra_hosts: ["host.docker.internal:host-gateway"]` |
+| 与项目一起部署 | 推荐两栈分开、网络互通：demo compose 的 api 服务加三个 `LANGFUSE_*` 环境变量 + `extra_hosts`（模板已内置，默认留空=关闭）；`pyproject.toml` 加 `langfuse>=5`；**`docker compose build langgraph-api` 重建**（SDK 要进镜像；新后端模块记得加进 `Dockerfile.oss` 的 COPY 列表）。已实测容器内上报成功 |
 
 ## 六、坑速查
 
